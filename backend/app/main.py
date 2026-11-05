@@ -5,6 +5,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi import Request
 from sqlalchemy import text
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from app.core.config import get_settings
 from app.core.database import Base, engine
 from app.modules.dashboard import models  # noqa: F401
@@ -51,6 +52,7 @@ app.include_router(auth_router)
 app.include_router(agent_router)
 app.include_router(render_worker_router)
 app.include_router(storage_router)
+app.mount("/media", StaticFiles(directory="/app/media"), name="media")
 
 
 @app.get("/api/health")

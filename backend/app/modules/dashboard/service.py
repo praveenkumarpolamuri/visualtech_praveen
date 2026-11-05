@@ -1,6 +1,6 @@
 from sqlalchemy import func
 from sqlalchemy.orm import Session
-from app.modules.domain import Approval, RenderJob, VideoAnalytics, VideoProject, YouTubeUpload
+from app.modules.domain import Approval, RenderJob, VideoAnalytics, VideoProject, YouTubeUpload, utcnow
 
 PIPELINE_STAGES = (
     ("Ideas", "idea", "#64748b"),
@@ -66,6 +66,20 @@ def get_dashboard(db: Session) -> dict:
     ]
 
     uploads = db.query(YouTubeUpload).all()
+    scheduled_uploads = db.query(YouTubeUpload).filter(
+        YouTubeUpload.scheduled_at.isnot(None),
+        YouTubeUpload.scheduled_at >= utcnow(),
+        YouTubeUpload.status.in_(("not_started", "scheduled", "queued")),
+    ).order_by(YouTubeUpload.scheduled_at.asc()).limit(5).all()
+    schedule = [
+        {
+            "title": upload.title,
+            "date": upload.scheduled_at.strftime("%d %b"),
+            "time": upload.scheduled_at.strftime("%H:%M UTC"),
+            "status": upload.status.title(),
+        }
+        for upload in scheduled_uploads
+    ]
 
     return {
         "metrics": [
@@ -77,7 +91,7 @@ def get_dashboard(db: Session) -> dict:
         ],
         "pipeline": pipeline,
         "recentProjects": recent_projects,
-        "schedule": [],
+        "schedule": schedule,
         "activities": activities,
         "automation": automation,
         "youtube_connected": any(upload.youtube_id for upload in uploads),

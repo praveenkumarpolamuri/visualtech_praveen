@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from pathlib import Path
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -12,6 +13,7 @@ from app.modules.dashboard import models  # noqa: F401
 from app.modules.dashboard.router import router as dashboard_router
 from app.modules.domain import router as domain_router, ContentPillar, ContentTopic, VideoProject, ResearchSource, VideoScript, VideoScene, MediaAsset, Approval, RenderJob
 from app.integrations.providers import router as integrations_router
+from app.integrations.media_generation import router as media_generation_router
 from app.core.auth import router as auth_router
 from app.modules.agent import router as agent_router
 from app.modules.render_worker import router as render_worker_router
@@ -48,11 +50,14 @@ async def security_headers(request: Request, call_next):
 app.include_router(dashboard_router)
 app.include_router(domain_router)
 app.include_router(integrations_router)
+app.include_router(media_generation_router)
 app.include_router(auth_router)
 app.include_router(agent_router)
 app.include_router(render_worker_router)
 app.include_router(storage_router)
-app.mount("/media", StaticFiles(directory="/app/media"), name="media")
+media_directory = (Path("media") / "public").resolve()
+media_directory.mkdir(parents=True, exist_ok=True)
+app.mount("/media", StaticFiles(directory=str(media_directory)), name="media")
 
 
 @app.get("/api/health")

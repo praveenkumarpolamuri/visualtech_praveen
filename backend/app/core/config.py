@@ -1,4 +1,5 @@
 from functools import lru_cache
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -23,7 +24,13 @@ class Settings(BaseSettings):
     s3_access_key: str = ""
     s3_secret_key: str = ""
     s3_bucket: str = "visualtech-media"
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    media_upload_max_bytes: int = Field(default=104857600, gt=0)
+    youtube_client_id: str = ""
+    youtube_client_secret: str = ""
+    youtube_token_encryption_key: str = ""
+    youtube_redirect_uri: str = "http://localhost:8000/api/integrations/youtube/callback"
+    frontend_url: str = "http://localhost:3000"
+    model_config = SettingsConfigDict(env_file=("../.env", ".env"), extra="ignore")
 
     @property
     def cors_origin_list(self) -> list[str]:

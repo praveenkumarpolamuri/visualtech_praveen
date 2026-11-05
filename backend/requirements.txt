@@ -11,3 +11,4 @@ PyJWT
 bcrypt
 python-multipart
 boto3>=1,<2
+cryptography>=43,<46

@@ -42,7 +42,7 @@ export default function Dashboard() {
   const [error, setError] = useState(false);
   const router = useRouter();
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/dashboard`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"}/api/dashboard`)
       .then(async r => { if (!r.ok) throw new Error(); return r.json(); })
       .then(d => { setData(d); setSource(d.source || "api"); })
       .catch(() => { setData(fallback); setSource("unavailable"); setError(true); })

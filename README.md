@@ -4,6 +4,33 @@ VisualTech is an AI-assisted documentary production studio for a faceless techno
 
 ## Run locally
 
+### npm shortcuts
+
+From the repository root:
+
+```bash
+npm run setup          # Create .env and install frontend/backend dependencies
+npm run dev            # Start the complete Docker application
+npm run dev:build      # Build images and start the complete application
+npm run dev:detached   # Start the complete application in the background
+npm run stop           # Stop running Docker containers
+npm run restart        # Restart Docker containers
+npm run logs           # Follow application logs
+npm run down           # Stop and remove containers
+npm run docker:ps      # Show container status
+npm run migrate        # Apply backend database migrations locally
+npm run validate       # Run backend tests, frontend lint, and frontend build
+```
+
+For a frontend/backend-only local development setup:
+
+```bash
+npm run frontend:dev
+npm run backend:dev
+```
+
+Run these in separate terminals after `npm run setup`. If the local backend uses SQLite, run `npm run migrate` before starting it.
+
 ### Frontend and backend
 
 ```bash

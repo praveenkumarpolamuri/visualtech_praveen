@@ -72,7 +72,6 @@ def download_visual(url: str, media_type: str) -> Path | None:
         response = httpx.get(
             url,
             headers={"User-Agent": "VisualTechAI/1.0 (local documentary renderer; contact: local-admin@example.com)"},
-                    if len(parts) != 2 or parts[0] != settings.s3_bucket or not (settings.s3_endpoint and settings.s3_access_key and settings.s3_secret_key):
             follow_redirects=True,
         )
         response.raise_for_status()

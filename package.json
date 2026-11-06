@@ -1,0 +1,29 @@
+{
+  "name": "visualtech",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "setup": "npm run setup:env && npm run install:frontend && npm run install:backend",
+    "setup:env": "test -f .env || cp .env.example .env",
+    "install:frontend": "npm --prefix frontend install",
+    "install:backend": "npm run backend:ensure",
+    "backend:ensure": "(test -x backend/.venv/bin/uvicorn && backend/.venv/bin/python -c \"import sys; raise SystemExit(sys.version_info < (3, 10))\") || (PYTHON_BIN=$(command -v python3.12 || command -v python3) && \"$PYTHON_BIN\" -c \"import sys; raise SystemExit(sys.version_info < (3, 10))\" || (echo 'Python 3.10+ is required. Install Python 3.12 and try again.' && exit 1); rm -rf backend/.venv && \"$PYTHON_BIN\" -m venv backend/.venv && backend/.venv/bin/python -m pip install --upgrade pip && backend/.venv/bin/python -m pip install -r backend/requirements.txt)",
+    "dev": "docker compose up",
+    "dev:build": "docker compose up --build",
+    "dev:detached": "docker compose up -d --build",
+    "stop": "docker compose stop",
+    "down": "docker compose down",
+    "restart": "docker compose restart",
+    "logs": "docker compose logs -f",
+    "frontend:dev": "npm --prefix frontend run dev",
+    "backend:dev": "npm run backend:ensure && cd backend && .venv/bin/uvicorn app.main:app --reload",
+    "backend:publisher": "npm run backend:ensure && cd backend && .venv/bin/python -m app.publisher",
+    "migrate": "npm run backend:ensure && cd backend && .venv/bin/alembic upgrade head",
+    "backend:test": "npm run backend:ensure && cd backend && .venv/bin/python -m pytest",
+    "frontend:lint": "npm --prefix frontend run lint",
+    "frontend:build": "npm --prefix frontend run build",
+    "frontend:start": "npm --prefix frontend run start",
+    "validate": "npm run backend:test && npm run frontend:lint && npm run frontend:build",
+    "docker:ps": "docker compose ps"
+  }
+}
